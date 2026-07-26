@@ -81,8 +81,8 @@ LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-v4-pro")
 # ============================================================
 # Embedding 配置
 # ============================================================
-EMBEDDING_MODEL = "shibing624/text2vec-base-chinese"  # 模型标识
-EMBEDDING_DIM = 768
+EMBEDDING_MODEL = "BAAI/bge-small-zh-v1.5"  # 模型标识（小模型，45MB）
+EMBEDDING_DIM = 512                         # BGE-small 向量维度
 ONNX_MODEL_DIR = os.path.join(PROJECT_DIR, "text2vec_onnx")  # ONNX 模型目录（本地用）
 
 # 模式: "local"=ONNX本地推理, "api"=HuggingFace Inference API（Render 部署用）

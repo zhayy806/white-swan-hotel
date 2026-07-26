@@ -79,7 +79,8 @@ class ONNXEmbeddings(Embeddings):
         return self._encode(texts).tolist()
 
     def embed_query(self, text: str) -> List[float]:
-        """生成查询向量（LangChain 接口）"""
+        """生成查询向量（BGE 指令前缀）"""
+        text = f"为这个句子生成表示以用于检索相关文章：{text}"
         return self._encode([text])[0].tolist()
 
     @property
