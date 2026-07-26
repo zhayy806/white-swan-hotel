@@ -113,11 +113,19 @@ def db_to_json(rows: list) -> list:
 # ============================================================
 # Lazy-load RAG 组件（首次调用时加载，避免启动慢）
 # ============================================================
+import threading
+
 _rag = None
+_rag_lock = threading.Lock()
 
 def get_rag():
     global _rag
-    if _rag is None:
+    if _rag is not None:
+        return _rag
+
+    with _rag_lock:
+        if _rag is not None:  # 双重检查
+            return _rag
         from scripts.onnx_embed import ONNXEmbeddings
         from langchain_community.vectorstores import Chroma
         from langchain_openai import ChatOpenAI
