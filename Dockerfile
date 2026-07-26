@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 项目文件（不包含 ONNX 模型，用 HF API 替代）
 COPY config.py .
-COPY scripts/step4_serve.py scripts/onnx_embed.py scripts/
+COPY scripts/step4_serve.py scripts/onnx_embed.py scripts/api_embed.py scripts/
 COPY data/白天鹅宾馆FAQ.md data/
 COPY db/ai_data_agent.db db/
 COPY chroma_db/ chroma_db/

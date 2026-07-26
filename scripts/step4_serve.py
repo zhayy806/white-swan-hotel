@@ -146,10 +146,10 @@ def get_rag():
         # 根据模式选择 embedding 后端
         if config.EMBEDDING_MODE == "api" or not os.path.exists(config.ONNX_MODEL_DIR):
             print("   📡 使用 HuggingFace Inference API 生成向量...")
-            from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
-            embedding = HuggingFaceInferenceAPIEmbeddings(
-                api_key=config.HF_API_KEY or None,
+            from scripts.api_embed import APIEmbeddings
+            embedding = APIEmbeddings(
                 model_name=config.EMBEDDING_MODEL,
+                api_key=config.HF_API_KEY,
             )
         else:
             print("   💻 使用本地 ONNX 模型生成向量...")
