@@ -117,14 +117,25 @@ import threading
 
 _rag = None
 _rag_lock = threading.Lock()
+_rag_ready = False  # 标记模型是否加载完成
 
 def get_rag():
-    global _rag
-    if _rag is not None:
+    """获取 RAG 组件。如果模型还在加载中，返回 None。"""
+    global _rag, _rag_ready
+    if _rag_ready and _rag is not None:
         return _rag
 
-    with _rag_lock:
-        if _rag is not None:  # 双重检查
+    # 模型还在加载或还没开始加载 → 不阻塞，直接返回 None
+    if _rag_lock.locked():
+        return None
+
+    # 尝试加载
+    acquired = _rag_lock.acquire(blocking=False)
+    if not acquired:
+        return None
+
+    try:
+        if _rag_ready and _rag is not None:
             return _rag
         from scripts.onnx_embed import ONNXEmbeddings
         from langchain_community.vectorstores import Chroma
@@ -179,6 +190,9 @@ def get_rag():
             "llm": llm,
             "chain": chain,
         }
+        _rag_ready = True
+    finally:
+        _rag_lock.release()
     return _rag
 
 
@@ -436,6 +450,17 @@ def get_crawl_log():
 @app.post("/api/rag/ask", response_model=RAGResponse)
 def rag_ask(req: RAGRequest):
     rag = get_rag()
+
+    # 模型还在后台加载中
+    if rag is None:
+        return RAGResponse(
+            question=req.question,
+            answer="🔄 智能管家正在启动中，AI 模型和知识库正在加载...\n\n请稍等 1-3 分钟后再提问，届时我将为您提供完整的解答服务。感谢您的耐心！",
+            faq_sources=[],
+            review_sources=[],
+            images=["images/酒店外观·珠江畔.jpg"],
+        )
+
     vs = rag["vectorstore"]
 
     # 双路检索：FAQ + 评论
