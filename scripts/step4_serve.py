@@ -1522,18 +1522,18 @@ def index():
 
 if __name__ == "__main__":
     import uvicorn
+    import threading
     print("=" * 60)
     print("🦢 白天鹅宾馆 · 评论智能分析系统")
     print("=" * 60)
     print(f"   SQLite:     {config.SQLITE_DB}")
     print(f"   Chroma:     {config.CHROMA_DIR}")
     print(f"   LLM:        {config.LLM_MODEL} ({'已配置' if config.LLM_API_KEY else '❌ 未配置'})")
-    print(f"\n   ⏳ 预加载 ONNX 模型和向量库...")
+    print(f"\n   ⏳ 后台预加载 ONNX 模型（不影响服务启动）...")
 
-    # 启动时预加载 RAG 组件（避免首次请求超时）
-    _start = datetime.now()
-    rag = get_rag()
-    print(f"   ✅ 预加载完成 ({int((datetime.now()-_start).total_seconds())}s)")
+    # 后台线程预加载模型，不阻塞 uvicorn 启动
+    threading.Thread(target=get_rag, daemon=True, name="rag-loader").start()
+
     print(f"\n   启动服务: http://localhost:8000")
     print(f"   API文档:  http://localhost:8000/docs")
     print("=" * 60)
