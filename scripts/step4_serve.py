@@ -472,11 +472,20 @@ def rag_ask(req: RAGRequest):
             images=["images/酒店外观·珠江畔.jpg"],
         )
 
-    vs = rag["vectorstore"]
+    try:
+        vs = rag["vectorstore"]
 
-    # 双路检索：FAQ + 评论
-    faq_docs = vs.similarity_search(req.question, k=req.faq_k, filter={"source": "hotel_faq"})
-    review_docs = vs.similarity_search(req.question, k=req.review_k, filter={"source": "user_review"})
+        # 双路检索：FAQ + 评论
+        faq_docs = vs.similarity_search(req.question, k=req.faq_k, filter={"source": "hotel_faq"})
+        review_docs = vs.similarity_search(req.question, k=req.review_k, filter={"source": "user_review"})
+    except Exception as e:
+        return RAGResponse(
+            question=req.question,
+            answer=f"❌ 知识库检索失败: {str(e)}\n\n请稍后重试。如果问题持续，请检查 HuggingFace API 是否可用。",
+            faq_sources=[],
+            review_sources=[],
+            images=["images/酒店外观·珠江畔.jpg"],
+        )
 
     # 格式化FAQ来源
     faq_sources = []
