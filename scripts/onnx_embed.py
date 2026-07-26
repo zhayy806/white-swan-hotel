@@ -56,10 +56,14 @@ class ONNXEmbeddings(Embeddings):
         if tokenizer_path is None:
             raise FileNotFoundError(f"找不到 tokenizer.json: {model_dir}")
 
-        # 加载 ONNX 会话（CPU 执行）
+        # 加载 ONNX 会话（CPU 执行，优化启动速度）
         opts = ort.SessionOptions()
-        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-        opts.intra_op_num_threads = 2  # 限制线程数节省内存
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC  # 关闭重度优化，加速加载
+        opts.enable_mem_pattern = False      # 不预分配内存
+        opts.enable_cpu_mem_arena = False    # 不预分配 Arena
+        opts.intra_op_num_threads = 1        # 单线程（共享CPU环境）
+        opts.inter_op_num_threads = 1
+        opts.log_severity_level = 3          # 只输出 ERROR
         self.session = ort.InferenceSession(
             str(onnx_path),
             opts,
