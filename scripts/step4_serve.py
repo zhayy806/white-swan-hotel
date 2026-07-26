@@ -118,18 +118,14 @@ _rag = None
 def get_rag():
     global _rag
     if _rag is None:
-        from langchain_community.embeddings import HuggingFaceEmbeddings
+        from scripts.onnx_embed import ONNXEmbeddings
         from langchain_community.vectorstores import Chroma
         from langchain_openai import ChatOpenAI
         from langchain_core.prompts import ChatPromptTemplate
         from langchain_core.runnables import RunnablePassthrough
         from langchain_core.output_parsers import StrOutputParser
 
-        embedding = HuggingFaceEmbeddings(
-            model_name=config.EMBEDDING_MODEL,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
+        embedding = ONNXEmbeddings(config.ONNX_MODEL_DIR)
         vs = Chroma(persist_directory=config.CHROMA_DIR, embedding_function=embedding)
 
         llm = None

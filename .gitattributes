@@ -1,0 +1,2 @@
+text2vec_onnx/model_fp16.onnx filter=lfs diff=lfs merge=lfs -text
+text2vec_onnx/model.onnx filter=lfs diff=lfs merge=lfs -text

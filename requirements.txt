@@ -15,8 +15,9 @@ langchain-openai>=0.2.0
 # --- 向量数据库（嵌入式，无需服务器） ---
 chromadb>=0.5.0
 
-# --- 本地 Embedding 模型 ---
-sentence-transformers>=3.0.0
+# --- 本地 Embedding 模型（ONNX Runtime，轻量无 PyTorch） ---
+onnxruntime>=1.19.0
+tokenizers>=0.21.0
 
 # --- LLM API ---
 openai>=1.50.0

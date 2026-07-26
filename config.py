@@ -79,11 +79,12 @@ LLM_API_KEY = os.getenv("DEEPSEEK_API_KEY") or os.getenv("OPENAI_API_KEY") or ""
 LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-v4-pro")
 
 # ============================================================
-# Embedding 配置（本地中文模型，免API费用）
+# Embedding 配置（ONNX Runtime 本地推理，无需 PyTorch）
 # ============================================================
-EMBEDDING_MODEL = "shibing624/text2vec-base-chinese"
+EMBEDDING_MODEL = "shibing624/text2vec-base-chinese"  # 模型标识
 EMBEDDING_DIM = 768
-# 国内 HuggingFace 镜像（解决下载模型被墙问题）
+ONNX_MODEL_DIR = os.path.join(PROJECT_DIR, "text2vec_onnx")  # ONNX 导出目录
+# 国内 HuggingFace 镜像（备用，ONNX 方案不需要联网）
 import os as _os
 _os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
