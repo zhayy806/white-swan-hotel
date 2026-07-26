@@ -1,0 +1,31 @@
+# ============================================================
+# OTA 酒店评论智能分析系统 — Python 依赖
+# ============================================================
+# 安装: pip install -r requirements.txt
+
+# --- 数据处理 ---
+pandas>=2.0.0
+numpy>=1.24.0
+
+# --- LangChain 生态 ---
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+
+# --- 向量数据库（嵌入式，无需服务器） ---
+chromadb>=0.5.0
+
+# --- 本地 Embedding 模型 ---
+sentence-transformers>=3.0.0
+
+# --- LLM API ---
+openai>=1.50.0
+
+# --- Web 服务 ---
+fastapi>=0.115.0
+uvicorn>=0.30.0
+
+# --- 可视化（可选，用于生成统计报告图） ---
+matplotlib>=3.7.0
+wordcloud>=1.9.0
+jieba>=0.42.0

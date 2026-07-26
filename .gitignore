@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+*.swp
+.vscode/
+.idea/
+# 原始数据不提交
+data/hotel_白天鹅_4000条评论.csv
+data/cleaned_comments.csv
+# 排除已部署的（用镜像里的）
+# chroma_db/ 和 db/ 需要在 Docker 构建时复制
