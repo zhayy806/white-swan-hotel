@@ -137,14 +137,25 @@ def get_rag():
     try:
         if _rag_ready and _rag is not None:
             return _rag
-        from scripts.onnx_embed import ONNXEmbeddings
         from langchain_community.vectorstores import Chroma
         from langchain_openai import ChatOpenAI
         from langchain_core.prompts import ChatPromptTemplate
         from langchain_core.runnables import RunnablePassthrough
         from langchain_core.output_parsers import StrOutputParser
 
-        embedding = ONNXEmbeddings(config.ONNX_MODEL_DIR)
+        # 根据模式选择 embedding 后端
+        if config.EMBEDDING_MODE == "api" or not os.path.exists(config.ONNX_MODEL_DIR):
+            print("   📡 使用 HuggingFace Inference API 生成向量...")
+            from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+            embedding = HuggingFaceInferenceAPIEmbeddings(
+                api_key=config.HF_API_KEY or None,
+                model_name=config.EMBEDDING_MODEL,
+            )
+        else:
+            print("   💻 使用本地 ONNX 模型生成向量...")
+            from scripts.onnx_embed import ONNXEmbeddings
+            embedding = ONNXEmbeddings(config.ONNX_MODEL_DIR)
+
         vs = Chroma(persist_directory=config.CHROMA_DIR, embedding_function=embedding)
 
         llm = None
