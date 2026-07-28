@@ -23,8 +23,8 @@ for _d in [DATA_DIR, DB_DIR, CHROMA_DIR, SCRIPTS_DIR]:
 # 数据源
 # ============================================================
 CSV_SOURCE = os.path.join(DATA_DIR, "hotel_白天鹅_4000条评论.csv")
-# 如果 data 目录下没有，就从桌面读取
-CSV_FALLBACK = "/Users/Zhuanz/Desktop/hotel_白天鹅_4000条评论.csv"
+# 备选路径可通过环境变量 CSV_PATH 指定，否则跳过
+CSV_FALLBACK = os.getenv("CSV_PATH", "")
 
 # ============================================================
 # SQLite 数据库
@@ -81,8 +81,7 @@ LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-v4-pro")
 # ============================================================
 # Embedding 配置
 # ============================================================
-EMBEDDING_MODEL = "BAAI/bge-small-zh-v1.5"  # 模型标识（小模型，45MB）
-EMBEDDING_DIM = 512                         # BGE-small 向量维度
+EMBEDDING_MODEL = "BAAI/bge-small-zh-v1.5"  # 模型标识（45MB ONNX，512d）
 ONNX_MODEL_DIR = os.path.join(PROJECT_DIR, "text2vec_onnx")  # ONNX 模型目录（本地用）
 
 # 模式: "local"=ONNX本地推理, "api"=HuggingFace Inference API（Render 部署用）
